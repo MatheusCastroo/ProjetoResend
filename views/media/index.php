@@ -1,11 +1,11 @@
 <div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
     <div>
-        <h1 class="text-2xl sm:text-3xl font-semibold text-slate-100 tracking-tight">Mídias</h1>
-        <p class="mt-1 text-slate-400 text-sm"><?= e($cliente['nome']) ?> — upload via API (provider cloudinary)</p>
+        <h1 class="text-2xl sm:text-3xl font-semibold text-slate-100 tracking-tight">Media</h1>
+        <p class="mt-1 text-slate-400 text-sm"><?= e($application['nome']) ?> — upload via API externa (cloudinary)</p>
     </div>
-    <a class="btn-saas shrink-0" href="<?= e(base_url('clientes')) ?>">
+    <a class="btn-saas shrink-0" href="<?= e(base_url('applications')) ?>">
         <i data-lucide="arrow-left" class="w-4 h-4" aria-hidden="true"></i>
-        Clientes
+        Applications
     </a>
 </div>
 
@@ -14,13 +14,13 @@
         <i data-lucide="cloud-upload" class="w-5 h-5 text-indigo-400" aria-hidden="true"></i>
         Novo upload
     </h2>
-    <form method="post" action="<?= e(base_url('midias/upload')) ?>" enctype="multipart/form-data">
+    <form method="post" action="<?= e(base_url('media/upload')) ?>" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
-        <input type="hidden" name="cliente_id" value="<?= (int) $cliente['id'] ?>">
+        <input type="hidden" name="application_id" value="<?= (int) $application['id'] ?>">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="field-saas">
                 <label class="label-saas" for="nome">Nome / descrição</label>
-                <input type="text" class="input-saas" id="nome" name="nome" placeholder="Banner promo">
+                <input type="text" class="input-saas" id="nome" name="nome" placeholder="Banner">
             </div>
             <div class="field-saas">
                 <label class="label-saas" for="arquivo">Arquivo</label>
@@ -29,14 +29,14 @@
         </div>
         <button type="submit" class="btn-saas btn-saas--primary">
             <i data-lucide="upload" class="w-4 h-4" aria-hidden="true"></i>
-            Enviar para API
+            Enviar
         </button>
     </form>
 </div>
 
 <div class="card-saas">
-    <?php if (empty($midias)): ?>
-        <p class="muted-saas text-center py-10 m-0">Nenhuma mídia. URLs ficam salvas para uso nos templates.</p>
+    <?php if (empty($items)): ?>
+        <p class="muted-saas text-center py-10 m-0">Nenhuma mídia. Copie URLs para usar nos templates.</p>
     <?php else: ?>
         <div class="table-saas-wrap">
             <table class="table-saas">
@@ -49,18 +49,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($midias as $m): ?>
+                    <?php foreach ($items as $m): ?>
                         <tr>
                             <td class="font-medium text-slate-100"><?= e($m['nome']) ?></td>
                             <td class="hidden md:table-cell">
-                                <a href="<?= e($m['url']) ?>" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 text-sm truncate max-w-xs inline-block align-bottom"><?= e(mb_substr($m['url'], 0, 48)) ?>…</a>
+                                <a href="<?= e($m['url']) ?>" target="_blank" rel="noopener" class="text-indigo-400 hover:text-indigo-300 text-sm truncate max-w-xs inline-block"><?= e(mb_substr($m['url'], 0, 48)) ?>…</a>
                             </td>
                             <td><?= e($m['provider']) ?></td>
                             <td class="text-right">
-                                <form method="post" action="<?= e(base_url('midias/excluir')) ?>" class="inline" onsubmit="return confirm('Remover registro?');">
+                                <form method="post" action="<?= e(base_url('media/excluir')) ?>" class="inline" onsubmit="return confirm('Remover?');">
                                     <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
                                     <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
-                                    <input type="hidden" name="cliente_id" value="<?= (int)$cliente['id'] ?>">
+                                    <input type="hidden" name="application_id" value="<?= (int)$application['id'] ?>">
                                     <button type="submit" class="btn-saas btn-saas--sm btn-saas--danger">Excluir</button>
                                 </form>
                             </td>

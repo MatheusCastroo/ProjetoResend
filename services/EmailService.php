@@ -2,32 +2,30 @@
 
 class EmailService
 {
-    private string $apiKey;
-    private string $from;
-
-    public function __construct(?array $resendConfig = null)
-    {
-        $c = $resendConfig ?? config('resend');
-        $this->apiKey = (string) ($c['api_key'] ?? '');
-        $this->from = (string) ($c['from'] ?? '');
-    }
-
     /**
+     * Envio usando credenciais Resend da própria application (API ou painel).
+     *
      * @return array{ok: bool, http: int, body: string, decoded: mixed}
      */
-    public function send(string $to, string $subject, string $html): array
-    {
-        if ($this->apiKey === '' || $this->apiKey === 're_xxxxxxxx') {
+    public function sendWithCredentials(
+        string $resendApiKey,
+        string $from,
+        string $to,
+        string $subject,
+        string $html
+    ): array {
+        $resendApiKey = trim($resendApiKey);
+        if ($resendApiKey === '') {
             return [
                 'ok' => false,
                 'http' => 0,
-                'body' => 'Resend API key não configurada',
+                'body' => 'resend_api_key não configurada para esta aplicação',
                 'decoded' => null,
             ];
         }
 
         $payload = [
-            'from' => $this->from,
+            'from' => $from,
             'to' => [$to],
             'subject' => $subject,
             'html' => $html,
@@ -38,7 +36,7 @@ class EmailService
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
             CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer ' . $this->apiKey,
+                'Authorization: Bearer ' . $resendApiKey,
                 'Content-Type: application/json',
             ],
             CURLOPT_RETURNTRANSFER => true,

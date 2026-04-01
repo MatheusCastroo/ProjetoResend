@@ -3,51 +3,51 @@
 class TemplateController
 {
     private TemplateRepository $tpl;
-    private ClienteRepository $cli;
-    private TemplateBaseRepository $bases;
+    private ApplicationRepository $apps;
 
     public function __construct()
     {
         $this->tpl = new TemplateRepository();
-        $this->cli = new ClienteRepository();
-        $this->bases = new TemplateBaseRepository();
+        $this->apps = new ApplicationRepository();
     }
 
     public function index(): void
     {
-        $clienteId = (int) ($_GET['cliente_id'] ?? 0);
-        if ($clienteId <= 0) {
-            flash('erro', 'Selecione um cliente.');
-            redirect('clientes');
+        $applicationId = (int) ($_GET['application_id'] ?? 0);
+        if ($applicationId <= 0) {
+            view('templates/index_all', [
+                'title' => 'Templates',
+                'rows' => $this->tpl->allForAdmin(),
+                'applications' => $this->apps->all(),
+            ]);
             return;
         }
-        $c = $this->cli->find($clienteId);
-        if (!$c) {
-            flash('erro', 'Cliente não encontrado.');
-            redirect('clientes');
+        $app = $this->apps->find($applicationId);
+        if (!$app) {
+            flash('erro', 'Application não encontrada.');
+            redirect('applications');
             return;
         }
         view('templates/index', [
-            'title' => 'Templates — ' . $c['nome'],
-            'cliente' => $c,
-            'templates' => $this->tpl->byCliente($clienteId),
+            'title' => 'Templates — ' . $app['nome'],
+            'application' => $app,
+            'templates' => $this->tpl->byApplication($applicationId),
         ]);
     }
 
     public function novo(): void
     {
-        $clienteId = (int) ($_GET['cliente_id'] ?? 0);
-        $c = $this->cli->find($clienteId);
-        if (!$c) {
-            flash('erro', 'Cliente não encontrado.');
-            redirect('clientes');
+        $applicationId = (int) ($_GET['application_id'] ?? 0);
+        $app = $this->apps->find($applicationId);
+        if (!$app) {
+            flash('erro', 'Application não encontrada.');
+            redirect('applications');
             return;
         }
         view('templates/form', [
             'title' => 'Novo template',
-            'cliente' => $c,
+            'application' => $app,
             'template' => null,
-            'bases' => $this->bases->byCliente($clienteId),
         ]);
     }
 
@@ -57,19 +57,18 @@ class TemplateController
         $t = $this->tpl->find($id);
         if (!$t) {
             flash('erro', 'Template não encontrado.');
-            redirect('clientes');
+            redirect('applications');
             return;
         }
-        $c = $this->cli->find((int) $t['cliente_id']);
-        if (!$c) {
-            redirect('clientes');
+        $app = $this->apps->find((int) $t['application_id']);
+        if (!$app) {
+            redirect('applications');
             return;
         }
         view('templates/form', [
             'title' => 'Editar template',
-            'cliente' => $c,
+            'application' => $app,
             'template' => $t,
-            'bases' => $this->bases->byCliente((int) $c['id']),
         ]);
     }
 
@@ -77,7 +76,7 @@ class TemplateController
     {
         csrf_verify();
         $id = (int) ($_POST['id'] ?? 0);
-        $clienteId = (int) ($_POST['cliente_id'] ?? 0);
+        $applicationId = (int) ($_POST['application_id'] ?? 0);
         $variaveisRaw = trim((string) ($_POST['variaveis_json'] ?? ''));
         $variaveis = null;
         if ($variaveisRaw !== '') {
@@ -85,8 +84,7 @@ class TemplateController
             $variaveis = is_array($decoded) ? $decoded : null;
         }
         $data = [
-            'cliente_id' => $clienteId,
-            'template_base_id' => (int) ($_POST['template_base_id'] ?? 0) ?: null,
+            'application_id' => $applicationId,
             'nome' => trim((string) ($_POST['nome'] ?? '')),
             'assunto' => trim((string) ($_POST['assunto'] ?? '')),
             'html' => (string) ($_POST['html'] ?? ''),
@@ -94,7 +92,7 @@ class TemplateController
         ];
         if ($data['nome'] === '' || $data['assunto'] === '') {
             flash('erro', 'Nome e assunto são obrigatórios.');
-            redirect($id ? 'templates/editar?id=' . $id : 'templates/novo?cliente_id=' . $clienteId);
+            redirect($id ? 'templates/editar?id=' . $id : 'templates/novo?application_id=' . $applicationId);
             return;
         }
         if ($id > 0) {
@@ -104,18 +102,18 @@ class TemplateController
             $this->tpl->create($data);
             flash('ok', 'Template criado.');
         }
-        redirect('templates?cliente_id=' . $clienteId);
+        redirect('templates?application_id=' . $applicationId);
     }
 
     public function excluir(): void
     {
         csrf_verify();
         $id = (int) ($_POST['id'] ?? 0);
-        $clienteId = (int) ($_POST['cliente_id'] ?? 0);
-        if ($id > 0 && $clienteId > 0) {
-            $this->tpl->delete($id, $clienteId);
+        $applicationId = (int) ($_POST['application_id'] ?? 0);
+        if ($id > 0 && $applicationId > 0) {
+            $this->tpl->delete($id, $applicationId);
             flash('ok', 'Template removido.');
         }
-        redirect('templates?cliente_id=' . $clienteId);
+        redirect('templates?application_id=' . $applicationId);
     }
 }

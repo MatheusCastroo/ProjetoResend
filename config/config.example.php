@@ -12,11 +12,7 @@ return [
     ],
     'app' => [
         'base_url' => '/ProjetoResend/public',
-        'default_test_email' => 'matheusesteves1160@gmail.com',
-    ],
-    'resend' => [
-        'api_key' => 're_xxxxxxxx',
-        'from' => 'Onboarding <onboarding@resend.dev>',
+        'default_test_email' => 'destinatario@exemplo.com',
     ],
     'caw_upload' => [
         'api_key' => 'seu_token_caw',

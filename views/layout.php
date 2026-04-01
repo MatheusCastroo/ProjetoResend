@@ -33,9 +33,10 @@
     <?php
     $navItems = [
         [base_url(), 'Início', 'layout-dashboard'],
-        [base_url('clientes'), 'Clientes', 'users'],
+        [base_url('applications'), 'Applications', 'layers'],
+        [base_url('templates'), 'Templates', 'file-code'],
         [base_url('envio'), 'Enviar', 'send'],
-        [base_url('historico'), 'Histórico', 'inbox'],
+        [base_url('logs'), 'Logs', 'inbox'],
     ];
     ?>
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.08] bg-slate-950/75 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-950/60">

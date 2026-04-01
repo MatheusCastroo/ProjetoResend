@@ -3,45 +3,45 @@
 class MediaController
 {
     private MediaRepository $repo;
-    private ClienteRepository $cli;
+    private ApplicationRepository $apps;
     private MediaService $upload;
 
     public function __construct()
     {
         $this->repo = new MediaRepository();
-        $this->cli = new ClienteRepository();
+        $this->apps = new ApplicationRepository();
         $this->upload = new MediaService();
     }
 
     public function index(): void
     {
-        $clienteId = (int) ($_GET['cliente_id'] ?? 0);
-        if ($clienteId <= 0) {
-            redirect('clientes');
+        $applicationId = (int) ($_GET['application_id'] ?? 0);
+        if ($applicationId <= 0) {
+            redirect('applications');
             return;
         }
-        $c = $this->cli->find($clienteId);
-        if (!$c) {
-            redirect('clientes');
+        $app = $this->apps->find($applicationId);
+        if (!$app) {
+            redirect('applications');
             return;
         }
-        view('midias/index', [
-            'title' => 'Mídias — ' . $c['nome'],
-            'cliente' => $c,
-            'midias' => $this->repo->byCliente($clienteId),
+        view('media/index', [
+            'title' => 'Media — ' . $app['nome'],
+            'application' => $app,
+            'items' => $this->repo->byApplication($applicationId),
         ]);
     }
 
     public function upload(): void
     {
         csrf_verify();
-        $clienteId = (int) ($_POST['cliente_id'] ?? 0);
+        $applicationId = (int) ($_POST['application_id'] ?? 0);
         $nome = trim((string) ($_POST['nome'] ?? ''));
         $file = $_FILES['arquivo'] ?? null;
 
-        if ($clienteId <= 0 || !$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        if ($applicationId <= 0 || !$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
             flash('erro', 'Envie um arquivo válido.');
-            redirect('midias?cliente_id=' . $clienteId);
+            redirect('media?application_id=' . $applicationId);
             return;
         }
 
@@ -52,7 +52,7 @@ class MediaController
         try {
             $res = $this->upload->uploadFile($tmp, $orig, $mime);
             $this->repo->create([
-                'cliente_id' => $clienteId,
+                'application_id' => $applicationId,
                 'nome' => $nome !== '' ? $nome : $orig,
                 'url' => $res['url'],
                 'provider' => 'cloudinary',
@@ -61,18 +61,18 @@ class MediaController
         } catch (Throwable $e) {
             flash('erro', $e->getMessage());
         }
-        redirect('midias?cliente_id=' . $clienteId);
+        redirect('media?application_id=' . $applicationId);
     }
 
     public function excluir(): void
     {
         csrf_verify();
         $id = (int) ($_POST['id'] ?? 0);
-        $clienteId = (int) ($_POST['cliente_id'] ?? 0);
-        if ($id > 0 && $clienteId > 0) {
-            $this->repo->delete($id, $clienteId);
+        $applicationId = (int) ($_POST['application_id'] ?? 0);
+        if ($id > 0 && $applicationId > 0) {
+            $this->repo->delete($id, $applicationId);
             flash('ok', 'Mídia removida.');
         }
-        redirect('midias?cliente_id=' . $clienteId);
+        redirect('media?application_id=' . $applicationId);
     }
 }

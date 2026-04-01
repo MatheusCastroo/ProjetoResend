@@ -4,11 +4,11 @@ class DashboardController
 {
     public function index(): void
     {
-        $clientes = new ClienteRepository();
+        $apps = new ApplicationRepository();
         $emails = new EmailRepository();
         view('dashboard/index', [
             'title' => 'Início',
-            'totalClientes' => count($clientes->all()),
+            'totalApplications' => count($apps->all()),
             'totalEmails' => $emails->countTotal(),
             'ultimosEmails' => $emails->all(null, 10),
         ]);

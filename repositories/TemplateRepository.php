@@ -9,12 +9,22 @@ class TemplateRepository
         $this->db = Database::get();
     }
 
-    public function byCliente(int $clienteId): array
+    public function allForAdmin(): array
+    {
+        $st = $this->db->query(
+            'SELECT t.*, a.nome AS application_nome FROM templates t
+             JOIN applications a ON a.id = t.application_id
+             ORDER BY a.nome, t.nome'
+        );
+        return $st->fetchAll();
+    }
+
+    public function byApplication(int $applicationId): array
     {
         $st = $this->db->prepare(
-            'SELECT t.* FROM templates t WHERE t.cliente_id = ? ORDER BY t.nome'
+            'SELECT * FROM templates WHERE application_id = ? ORDER BY nome'
         );
-        $st->execute([$clienteId]);
+        $st->execute([$applicationId]);
         return $st->fetchAll();
     }
 
@@ -33,12 +43,11 @@ class TemplateRepository
             $variaveis = json_encode($variaveis, JSON_UNESCAPED_UNICODE);
         }
         $st = $this->db->prepare(
-            'INSERT INTO templates (cliente_id, template_base_id, nome, assunto, html, variaveis)
-             VALUES (?, ?, ?, ?, ?, ?)'
+            'INSERT INTO templates (application_id, nome, assunto, html, variaveis)
+             VALUES (?, ?, ?, ?, ?)'
         );
         $st->execute([
-            $data['cliente_id'],
-            $data['template_base_id'] ?: null,
+            $data['application_id'],
             $data['nome'],
             $data['assunto'],
             $data['html'],
@@ -54,23 +63,22 @@ class TemplateRepository
             $variaveis = json_encode($variaveis, JSON_UNESCAPED_UNICODE);
         }
         $st = $this->db->prepare(
-            'UPDATE templates SET template_base_id = ?, nome = ?, assunto = ?, html = ?, variaveis = ?
-             WHERE id = ? AND cliente_id = ?'
+            'UPDATE templates SET nome = ?, assunto = ?, html = ?, variaveis = ?
+             WHERE id = ? AND application_id = ?'
         );
         $st->execute([
-            $data['template_base_id'] ?: null,
             $data['nome'],
             $data['assunto'],
             $data['html'],
             $variaveis,
             $id,
-            $data['cliente_id'],
+            $data['application_id'],
         ]);
     }
 
-    public function delete(int $id, int $clienteId): void
+    public function delete(int $id, int $applicationId): void
     {
-        $st = $this->db->prepare('DELETE FROM templates WHERE id = ? AND cliente_id = ?');
-        $st->execute([$id, $clienteId]);
+        $st = $this->db->prepare('DELETE FROM templates WHERE id = ? AND application_id = ?');
+        $st->execute([$id, $applicationId]);
     }
 }

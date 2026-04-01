@@ -96,7 +96,7 @@ function badge_status(string $status): string
 }
 
 /**
- * Caminho da requisição relativo ao base_url (ex.: /clientes).
+ * Caminho da requisição relativo ao base_url (ex.: /applications).
  */
 function view(string $name, array $data = []): void
 {
