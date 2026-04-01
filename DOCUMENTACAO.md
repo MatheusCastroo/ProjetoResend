@@ -81,7 +81,7 @@ Rotas principais (sob `public/`):
 | `/envio` | Envio manual (teste) |
 | `/logs` | Histórico com filtro por application |
 
-Upload de logo e media usa **`MediaService`** → `https://cloud.caw.agency/api/upload` (Bearer em `config.caw_upload.api_key`).
+Upload de logo e media usa **`MediaService`** → `caw_upload.api_url` (padrão `https://cloud.caw.agency/api/upload`) com Bearer em `caw_upload.api_key`. Alternativa: variáveis de ambiente `CAW_UPLOAD_API_KEY`, `CAW_UPLOAD_API_URL`, `CAW_UPLOAD_API_BASE`, `CAW_UPLOAD_PROVIDER` (ou `CAW_API_KEY` para a chave).
 
 ---
 
@@ -90,7 +90,7 @@ Upload de logo e media usa **`MediaService`** → `https://cloud.caw.agency/api/
 - **`db.*`** — MySQL.
 - **`app.base_url`** — ex.: `/ProjetoResend/public` (deve coincidir com a URL pública).
 - **`app.default_test_email`** — pré-preenchido no envio manual.
-- **`caw_upload.*`** — chave e URL da API de upload de imagens.
+- **`caw_upload.*`** — `api_key`, `api_url`, `api_base`, `provider` (upload de imagens ≠ Resend).
 
 **Resend:** não há chave global; cada **application** guarda `resend_api_key` e `resend_from` no painel.
 

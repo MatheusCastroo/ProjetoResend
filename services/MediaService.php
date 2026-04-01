@@ -8,9 +8,9 @@ class MediaService
 
     public function __construct(?array $cawConfig = null)
     {
-        $c = $cawConfig ?? config('caw_upload');
-        $this->url = $c['url'];
-        $this->apiKey = (string) ($c['api_key'] ?? '');
+        $c = $cawConfig ?? config('caw_upload') ?? [];
+        $this->url = (string) ($c['api_url'] ?? $c['url'] ?? '');
+        $this->apiKey = trim((string) ($c['api_key'] ?? ''));
         $this->provider = (string) ($c['provider'] ?? 'cloudinary');
     }
 
@@ -21,7 +21,14 @@ class MediaService
     public function uploadFile(string $tmpPath, string $originalName, string $mime = 'application/octet-stream'): array
     {
         if ($this->apiKey === '') {
-            throw new RuntimeException('Configure caw_upload.api_key em config/config.php');
+            throw new RuntimeException(
+                'Configure o upload Caw: defina caw_upload.api_key em config/config.php ou a variável de ambiente CAW_UPLOAD_API_KEY (ou CAW_API_KEY).'
+            );
+        }
+        if ($this->url === '') {
+            throw new RuntimeException(
+                'Configure caw_upload.api_url (ou caw_upload.url) em config/config.php'
+            );
         }
 
         if (!is_uploaded_file($tmpPath) && !is_readable($tmpPath)) {
@@ -29,18 +36,24 @@ class MediaService
         }
 
         $cfile = curl_file_create($tmpPath, $mime, $originalName);
+        // A API Caw costuma exigir api_key no corpo (multipart) e/ou headers explícitos — não só Bearer.
         $post = [
             'file' => $cfile,
             'provider' => $this->provider,
+            'api_key' => $this->apiKey,
+        ];
+
+        $headers = [
+            'Accept: application/json',
+            'Authorization: Bearer ' . $this->apiKey,
+            'X-API-Key: ' . $this->apiKey,
         ];
 
         $ch = curl_init($this->url);
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $post,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer ' . $this->apiKey,
-            ],
+            CURLOPT_HTTPHEADER => $headers,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 120,
         ]);
