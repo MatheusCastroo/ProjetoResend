@@ -14,7 +14,7 @@ class EnvioController
         $templates = $application ? $tpl->byApplication($applicationId) : [];
         $template = $templateId > 0 ? $tpl->find($templateId) : null;
 
-        if ($template && $application && (int) $template['application_id'] !== (int) $application['id']) {
+        if ($template && $application && !$tpl->isLinked((int) $application['id'], (int) $template['id'])) {
             $template = null;
         }
 
@@ -42,7 +42,7 @@ class EnvioController
         $tpl = new TemplateRepository();
         $app = $apps->find($applicationId);
         $t = $tpl->find($templateId);
-        if (!$app || !$t || (int) $t['application_id'] !== (int) $app['id']) {
+        if (!$app || !$t || !$tpl->isLinked((int) $app['id'], (int) $t['id'])) {
             http_response_code(400);
             echo 'Dados inválidos';
             return;
@@ -68,8 +68,8 @@ class EnvioController
 
         $app = $apps->find($applicationId);
         $t = $tpl->find($templateId);
-        if (!$app || !$t || (int) $t['application_id'] !== (int) $app['id']) {
-            flash('erro', 'Application ou template inválidos.');
+        if (!$app || !$t || !$tpl->isLinked($applicationId, $templateId)) {
+            flash('erro', 'Application ou template inválidos (template não vinculado).');
             redirect('envio');
             return;
         }

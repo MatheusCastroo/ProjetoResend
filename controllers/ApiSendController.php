@@ -33,8 +33,8 @@ class ApiSendController
 
         $tplRepo = new TemplateRepository();
         $template = $tplRepo->find($templateId);
-        if (!$template || (int) $template['application_id'] !== (int) $application['id']) {
-            $this->json(401, ['success' => false, 'message' => 'Template inválido ou não pertence a esta aplicação']);
+        if (!$template || !$tplRepo->isLinked((int) $application['id'], $templateId)) {
+            $this->json(401, ['success' => false, 'message' => 'Template inválido ou não vinculado a esta application']);
             return;
         }
 

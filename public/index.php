@@ -36,8 +36,11 @@ $router->post('/applications/regenerar-chave', [ApplicationController::class, 'r
 $router->get('/templates', [TemplateController::class, 'index']);
 $router->get('/templates/novo', [TemplateController::class, 'novo']);
 $router->get('/templates/editar', [TemplateController::class, 'editar']);
+$router->get('/templates/vincular', [TemplateController::class, 'vincular']);
 $router->post('/templates/salvar', [TemplateController::class, 'salvar']);
+$router->post('/templates/desvincular', [TemplateController::class, 'desvincular']);
 $router->post('/templates/excluir', [TemplateController::class, 'excluir']);
+$router->post('/templates/vincular', [TemplateController::class, 'vincular']);
 
 $router->get('/media', [MediaController::class, 'index']);
 $router->post('/media/upload', [MediaController::class, 'upload']);
