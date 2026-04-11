@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/env.php';
+
 session_start();
 
 require_once __DIR__ . '/helpers.php';

@@ -12,6 +12,10 @@ $dbHost = getenv('DB_HOST');
 if ($dbHost === false || $dbHost === '') {
     $dbHost = '127.0.0.1';
 }
+$dbPort = getenv('DB_PORT');
+if ($dbPort === false || $dbPort === '') {
+    $dbPort = '3306';
+}
 $dbName = getenv('DB_NAME');
 if ($dbName === false || $dbName === '') {
     $dbName = 'projeto_resend';
@@ -38,6 +42,7 @@ if ($defaultTestEmail === false || $defaultTestEmail === '') {
 return [
     'db' => [
         'host' => $dbHost,
+        'port' => (int) $dbPort,
         'name' => $dbName,
         'user' => $dbUser,
         'pass' => $dbPass,

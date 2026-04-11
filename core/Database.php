@@ -9,9 +9,11 @@ class Database
         if (self::$pdo === null) {
             $c = require dirname(__DIR__) . '/config/config.php';
             $db = $c['db'];
+            $port = isset($db['port']) ? (int) $db['port'] : 3306;
             $dsn = sprintf(
-                'mysql:host=%s;dbname=%s;charset=%s',
+                'mysql:host=%s;port=%d;dbname=%s;charset=%s',
                 $db['host'],
+                $port,
                 $db['name'],
                 $db['charset']
             );

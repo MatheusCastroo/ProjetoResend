@@ -9,11 +9,15 @@
  *   CAW_UPLOAD_PROVIDER  (default: cloudinary)
  *
  * Docker / ambiente (sobrescrevem os padrões acima quando definidos):
- *   DB_HOST, DB_NAME, DB_USER, DB_PASS, APP_BASE_URL, DEFAULT_TEST_EMAIL
+ *   DB_HOST, DB_PORT (default 3306), DB_NAME, DB_USER, DB_PASS, APP_BASE_URL, DEFAULT_TEST_EMAIL
  */
 $dbHost = getenv('DB_HOST');
 if ($dbHost === false || $dbHost === '') {
     $dbHost = '127.0.0.1';
+}
+$dbPort = getenv('DB_PORT');
+if ($dbPort === false || $dbPort === '') {
+    $dbPort = '3306';
 }
 $dbName = getenv('DB_NAME');
 if ($dbName === false || $dbName === '') {
@@ -41,6 +45,7 @@ if ($defaultTestEmail === false || $defaultTestEmail === '') {
 return [
     'db' => [
         'host' => $dbHost,
+        'port' => (int) $dbPort,
         'name' => $dbName,
         'user' => $dbUser,
         'pass' => $dbPass,
