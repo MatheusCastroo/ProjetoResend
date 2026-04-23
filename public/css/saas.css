@@ -163,6 +163,23 @@ html {
 }
 .select-saas {
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 2.5rem;
+  /* Tailwind e reset do browser podem deixar o select com fundo claro — força o tema dark */
+  color-scheme: dark;
+  color: #e5e7eb;
+  background-color: rgba(15, 23, 42, 0.9);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M4 6h8L8 11z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 0.9rem;
+  padding-right: 2rem;
+}
+select.select-saas option,
+.select-saas option {
+  background: #0f172a;
+  color: #e5e7eb;
 }
 
 /* ---------- Table ---------- */
@@ -173,9 +190,65 @@ html {
 }
 .table-saas {
   width: 100%;
+  table-layout: auto;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.875rem;
+}
+.logs-page .table-saas {
+  min-width: 52rem;
+}
+.table-saas th,
+.table-saas td {
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+/* Logs: colunas com classes (nth-child quebra com colunas responsivas `hidden`) */
+.logs-col-date {
+  width: 9.5rem;
+  min-width: 6rem;
+  white-space: normal;
+}
+.logs-col-app {
+  width: 16%;
+  min-width: 6rem;
+}
+.logs-col-template {
+  width: 15%;
+  min-width: 5.5rem;
+}
+.logs-col-para {
+  width: auto;
+  min-width: 0;
+  font-weight: 500;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+.logs-col-status {
+  width: 6.5rem;
+  min-width: 5rem;
+}
+.logs-col-actions {
+  width: 4.25rem;
+  min-width: 4.25rem;
+  text-align: right;
+}
+/* Fallback se o CSS do Tailwind CDN atrasar ou falhar */
+.logs-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (min-width: 640px) {
+  .logs-page-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
 }
 .table-saas th {
   text-align: left;
