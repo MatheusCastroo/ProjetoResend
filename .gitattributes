@@ -1,0 +1,2 @@
+# Shell shebangs break in Linux containers if checked out with CRLF (Windows)
+*.sh text eol=lf
