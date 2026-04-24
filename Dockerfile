@@ -11,6 +11,9 @@ RUN set -eux; \
 
 WORKDIR /var/www/html
 
+# Raiz do site = pasta public/ (php -S -t). Sem isso, assets usam o default /ProjetoResend/public e quebram.
+ENV APP_BASE_URL=
+
 COPY . /var/www/html
 
 RUN chmod +x /var/www/html/docker/entrypoint.sh
