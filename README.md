@@ -17,11 +17,6 @@ Se o comando `docker` não existir no PowerShell, instale o Docker Desktop e rei
 
 2) Suba os containers:
 
-```powershell
-cd C:\xampp\htdocs\ProjetoResend
-docker compose up --build -d
-```
-
 3) Acesse no navegador:
 
 - `http://localhost:8080/` (ou a porta definida em `WEB_PORT`)
@@ -50,18 +45,3 @@ Para o painel/API:
 
 - A imagem **`web`**, construída a partir do `Dockerfile` (PHP **CLI Alpine** + servidor embutido), em geral fica **por volta de 40–55 MB** no `docker images` — depende da tag base e de quantas camadas você já tiver no cache.
 - A imagem **`db`** usa **`mysql:8.0`**; ela continua **grande** (centenas de MB). Só a app + PHP é que fica leve. Isso é esperado.
-
-## Parar / limpar
-
-Parar:
-
-```powershell
-docker compose down
-```
-
-Parar e remover dados do MySQL:
-
-```powershell
-docker compose down -v
-```
-
