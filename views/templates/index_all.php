@@ -24,6 +24,7 @@
                 <thead>
                     <tr>
                         <th>Nome</th>
+                        <th>Event key</th>
                         <th>Applications</th>
                         <th>Assunto</th>
                         <th class="text-right">Ações</th>
@@ -33,6 +34,7 @@
                     <?php foreach ($rows as $r): ?>
                         <tr>
                             <td class="font-medium text-slate-100"><?= e($r['nome']) ?></td>
+                            <td class="text-slate-500 text-sm font-mono"><?= !empty($r['event_key']) ? e((string) $r['event_key']) : '—' ?></td>
                             <td class="text-slate-400 text-sm max-w-xs">
                                 <?php if (!empty($r['apps_count'])): ?>
                                     <?= e($r['applications_nomes'] ?? '—') ?>

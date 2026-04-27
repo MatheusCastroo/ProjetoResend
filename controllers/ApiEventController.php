@@ -1,13 +1,13 @@
 <?php
 
 /**
- * POST /api/send/{template_id}
+ * POST /api/event/{event_key}
  * Header: X-API-KEY
  * Body JSON: { "email": "...", "data": { ... } }
  */
-class ApiSendController
+class ApiEventController
 {
-    public function send(int $templateId): void
+    public function dispatch(string $eventKeyRaw): void
     {
         $this->corsHeaders();
 
@@ -17,6 +17,12 @@ class ApiSendController
         }
 
         header('Content-Type: application/json; charset=utf-8');
+
+        $eventKey = trim(rawurldecode($eventKeyRaw));
+        if ($eventKey === '') {
+            $this->json(404, ['success' => false, 'message' => 'event_key não encontrado']);
+            return;
+        }
 
         $apiKey = $this->readApiKey();
         if ($apiKey === '') {
@@ -32,9 +38,14 @@ class ApiSendController
         }
 
         $tplRepo = new TemplateRepository();
-        $template = $tplRepo->find($templateId);
-        if (!$template || !$tplRepo->isLinked((int) $application['id'], $templateId)) {
-            $this->json(401, ['success' => false, 'message' => 'Template inválido ou não vinculado a esta application']);
+        $template = $tplRepo->findFirstLinkedByEventKey((int) $application['id'], $eventKey);
+
+        if (!$template) {
+            if ($tplRepo->countByEventKey($eventKey) > 0) {
+                $this->json(401, ['success' => false, 'message' => 'Template não vinculado a esta application']);
+                return;
+            }
+            $this->json(404, ['success' => false, 'message' => 'event_key não encontrado']);
             return;
         }
 

@@ -50,6 +50,33 @@ class TemplateRepository
     }
 
     /**
+     * Primeiro template com event_key vinculado à application (ordem por id).
+     *
+     * @return array<string, mixed>|null
+     */
+    public function findFirstLinkedByEventKey(int $applicationId, string $eventKey): ?array
+    {
+        $st = $this->db->prepare(
+            'SELECT t.* FROM templates t
+             INNER JOIN application_templates at ON at.template_id = t.id
+             WHERE at.application_id = ? AND t.event_key = ?
+             ORDER BY t.id ASC
+             LIMIT 1'
+        );
+        $st->execute([$applicationId, $eventKey]);
+        $row = $st->fetch();
+        return $row ?: null;
+    }
+
+    /** Quantidade de templates (globais) com este event_key preenchido. */
+    public function countByEventKey(string $eventKey): int
+    {
+        $st = $this->db->prepare('SELECT COUNT(*) FROM templates WHERE event_key = ?');
+        $st->execute([$eventKey]);
+        return (int) $st->fetchColumn();
+    }
+
+    /**
      * IDs das applications que usam este template.
      *
      * @return list<int>
@@ -96,11 +123,13 @@ class TemplateRepository
         if (is_array($variaveis)) {
             $variaveis = json_encode($variaveis, JSON_UNESCAPED_UNICODE);
         }
+        $eventKey = $this->normalizeEventKey($data['event_key'] ?? null);
         $st = $this->db->prepare(
-            'INSERT INTO templates (nome, assunto, html, variaveis) VALUES (?, ?, ?, ?)'
+            'INSERT INTO templates (nome, event_key, assunto, html, variaveis) VALUES (?, ?, ?, ?, ?)'
         );
         $st->execute([
             $data['nome'],
+            $eventKey,
             $data['assunto'],
             $data['html'],
             $variaveis,
@@ -114,11 +143,13 @@ class TemplateRepository
         if (is_array($variaveis)) {
             $variaveis = json_encode($variaveis, JSON_UNESCAPED_UNICODE);
         }
+        $eventKey = $this->normalizeEventKey($data['event_key'] ?? null);
         $st = $this->db->prepare(
-            'UPDATE templates SET nome = ?, assunto = ?, html = ?, variaveis = ? WHERE id = ?'
+            'UPDATE templates SET nome = ?, event_key = ?, assunto = ?, html = ?, variaveis = ? WHERE id = ?'
         );
         $st->execute([
             $data['nome'],
+            $eventKey,
             $data['assunto'],
             $data['html'],
             $variaveis,
@@ -174,5 +205,14 @@ class TemplateRepository
     {
         $st = $this->db->prepare('DELETE FROM templates WHERE id = ?');
         $st->execute([$id]);
+    }
+
+    private function normalizeEventKey(mixed $value): ?string
+    {
+        if ($value === null || !is_string($value)) {
+            return null;
+        }
+        $s = trim($value);
+        return $s === '' ? null : $s;
     }
 }

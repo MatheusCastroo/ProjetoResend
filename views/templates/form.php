@@ -44,6 +44,12 @@ $linkedSet = array_fill_keys(array_map('intval', $linkedApplicationIds ?? []), t
         </div>
 
         <div class="field-saas">
+            <label class="label-saas" for="event_key">Event key (API)</label>
+            <input type="text" class="input-saas" id="event_key" name="event_key" placeholder="ex.: reset_password, welcome_user" value="<?= e(isset($template['event_key']) ? (string) $template['event_key'] : '') ?>">
+            <p class="muted-saas mt-1.5 text-sm">Opcional. Se preenchido, permite enviar via <span class="code-inline">POST /api/event/{event_key}</span> sem expor o ID do template.</p>
+        </div>
+
+        <div class="field-saas">
             <label class="label-saas" for="assunto">Assunto</label>
             <input type="text" class="input-saas" id="assunto" name="assunto" required value="<?= e($template['assunto'] ?? '') ?>">
         </div>

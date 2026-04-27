@@ -86,6 +86,7 @@ class TemplateController
         }
         $data = [
             'nome' => trim((string) ($_POST['nome'] ?? '')),
+            'event_key' => trim((string) ($_POST['event_key'] ?? '')),
             'assunto' => trim((string) ($_POST['assunto'] ?? '')),
             'html' => (string) ($_POST['html'] ?? ''),
             'variaveis' => $variaveis,

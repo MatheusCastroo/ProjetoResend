@@ -36,6 +36,7 @@
                 <thead>
                     <tr>
                         <th>Nome</th>
+                        <th>Event key</th>
                         <th>Assunto</th>
                         <th class="text-right">Ações</th>
                     </tr>
@@ -44,6 +45,7 @@
                     <?php foreach ($templates as $t): ?>
                         <tr>
                             <td class="font-medium text-slate-100"><?= e($t['nome']) ?></td>
+                            <td class="text-slate-500 text-sm font-mono"><?= !empty($t['event_key']) ? e((string) $t['event_key']) : '—' ?></td>
                             <td class="text-slate-400 max-w-xs truncate"><?= e($t['assunto']) ?></td>
                             <td class="text-right">
                                 <div class="flex flex-wrap justify-end gap-1.5">

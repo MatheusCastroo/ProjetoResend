@@ -22,11 +22,13 @@ CREATE TABLE IF NOT EXISTS applications (
 CREATE TABLE IF NOT EXISTS templates (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
+  event_key VARCHAR(128) NULL,
   assunto VARCHAR(500) NOT NULL,
   html MEDIUMTEXT NOT NULL,
   variaveis JSON NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_templates_nome (nome)
+  INDEX idx_templates_nome (nome),
+  INDEX idx_templates_event_key (event_key)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS application_templates (

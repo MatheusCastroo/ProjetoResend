@@ -8,6 +8,21 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $path = request_path();
 
 /* API pública */
+if (preg_match('#^/api/event/([^/]+)$#', $path, $m)) {
+    if ($method === 'OPTIONS') {
+        (new ApiEventController())->dispatch($m[1]);
+        exit;
+    }
+    if ($method === 'POST') {
+        (new ApiEventController())->dispatch($m[1]);
+        exit;
+    }
+    http_response_code(405);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['success' => false, 'message' => 'Método não permitido'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 if (preg_match('#^/api/send/(\d+)$#', $path, $m)) {
     if ($method === 'OPTIONS') {
         (new ApiSendController())->send((int) $m[1]);
