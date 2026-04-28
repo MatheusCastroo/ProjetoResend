@@ -1,7 +1,7 @@
 <div class="logs-page">
 <div class="logs-page-header mb-8">
     <div>
-        <h1 class="text-2xl sm:text-3xl font-semibold text-slate-100 tracking-tight m-0">Logs</h1>
+        <h1 class="text-2xl sm:text-3xl font-semibold text-slate-100 tracking-tight m-0">Logs 123</h1>
         <p class="mt-1 text-slate-400 text-sm m-0">Histórico de envios (API e painel).</p>
     </div>
     <form method="get" action="<?= e(base_url('logs')) ?>" class="w-full sm:w-auto shrink-0 max-w-full">
